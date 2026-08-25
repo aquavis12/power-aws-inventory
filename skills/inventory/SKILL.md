@@ -365,11 +365,13 @@ For large AWS accounts (many regions, hundreds or thousands of resources), do NO
 
 2. **Write each workbook immediately** after its category group scan completes — do NOT wait for the full scan to finish.
 
-3. **Generate a Master Index workbook** at the end:
+3. **Generate a Master workbook** at the end:
    - File: `inventory-reports/aws-inventory-<accountId>-<date>-MASTER.xlsx`
-   - Contains a "Summary" sheet with account metadata, total resource counts per group, scan timestamp, and regions scanned.
+   - **MUST contain ALL resource sheets** from every category group — this is the single comprehensive workbook with every discovered resource, one sheet per service category (same as a normal single-workbook scan).
+   - Additionally contains a "Summary" sheet (first sheet) with account metadata, total resource counts per group, scan timestamp, and regions scanned.
    - Contains a "File Index" sheet listing each group workbook filename, sheet count, and total resources in that workbook.
    - Contains a "ScanNotes" sheet with any errors, access-denied entries, or skipped services.
+   - The Master workbook is the authoritative, complete inventory — the per-group workbooks are convenience splits for sharing or partial review.
 
 ### When to Use This Strategy
 
