@@ -342,8 +342,71 @@ When `scanMode` is `quick`:
 
 ---
 
+## Large Account Strategy — Incremental Multi-Workbook Output
+
+For large AWS accounts (many regions, hundreds or thousands of resources), do NOT attempt to collect all data before generating output. Instead, produce Excel sheets incrementally as each category group completes. This avoids long wait times, memory pressure, and the risk of losing progress if something fails mid-scan.
+
+### Approach: One Workbook Per Category Group + Master Index
+
+1. **Generate a separate Excel workbook per category group** as soon as that group's scan finishes:
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Compute.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Storage.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Database.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Networking.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Security.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Analytics.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-AppIntegration.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-ML.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Management.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-DevTools.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Migration.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-CostManagement.xlsx`
+   - `inventory-reports/aws-inventory-<accountId>-<date>-Identity.xlsx`
+
+2. **Write each workbook immediately** after its category group scan completes — do NOT wait for the full scan to finish.
+
+3. **Generate a Master Index workbook** at the end:
+   - File: `inventory-reports/aws-inventory-<accountId>-<date>-MASTER.xlsx`
+   - Contains a "Summary" sheet with account metadata, total resource counts per group, scan timestamp, and regions scanned.
+   - Contains a "File Index" sheet listing each group workbook filename, sheet count, and total resources in that workbook.
+   - Contains a "ScanNotes" sheet with any errors, access-denied entries, or skipped services.
+
+### When to Use This Strategy
+
+- **Always use for `full` scan mode** — full scans cover 109 service categories and can take 10–20 minutes on large accounts.
+- **Use for `category` mode when scanning 3+ category groups** or when multi-region is enabled with 5+ regions.
+- **NOT needed for `quick` mode** — quick scans are fast enough to produce a single workbook.
+
+### Benefits
+
+- The user gets partial results within 1–2 minutes instead of waiting 15+ minutes for everything.
+- If the scan is interrupted or a category group fails, prior workbooks are already saved.
+- Keeps individual workbook file sizes manageable (no 50MB+ single file).
+- Easier for the user to share or review specific areas (e.g., just the Security workbook).
+
+### Progress Reporting
+
+After each group workbook is written, inform the user:
+```
+✓ Compute scan complete — 47 resources across 3 regions → aws-inventory-123456789012-20260825-Compute.xlsx
+✓ Storage scan complete — 22 resources across 3 regions → aws-inventory-123456789012-20260825-Storage.xlsx
+  ... scanning Database ...
+```
+
+### Final Summary
+
+After the Master workbook is generated, present:
+- Total workbooks produced
+- Total resources across all groups
+- Top resource-heavy groups
+- Any groups that were skipped or had errors
+- Path to the MASTER index workbook
+
+---
+
 ## Guardrails
 
+- **Always use the Power**. All AWS interactions MUST go through the `power-aws-inventory` Kiro Power and its MCP servers (`aws-mcp`, `aws-documentation-mcp-server`). NEVER shell out to AWS CLI commands directly (e.g., never run `aws ec2 describe-instances` via terminal). Use the Power's tools exclusively for all API calls, resource discovery, and data retrieval.
 - **Read-only**. Never create, modify, or delete any AWS resource.
 - **Page through ALL results** — never truncate inventory data.
 - **Respect rate limits** — add delays between API calls if throttled.

@@ -1,6 +1,6 @@
 {
-  "regions": ["us-east-1"],
-  "regionScope": "single",
+  "regions": ["all"],
+  "regionScope": "all",
   "regionScopeOptions": {
     "single": "Scans only the first region in the regions array",
     "multi": "Scans all regions listed in the regions array",
