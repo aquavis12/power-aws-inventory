@@ -1,6 +1,7 @@
 {
   "regions": ["all"],
   "regionScope": "all",
+  "excludeRegions": ["me-south-1", "me-central-1"],
   "regionScopeOptions": {
     "single": "Scans only the first region in the regions array",
     "multi": "Scans all regions listed in the regions array",
