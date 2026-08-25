@@ -339,6 +339,15 @@ power-aws-inventory/
 
 ---
 
+## Issues & Support
+
+Found a bug or have a feature request?
+
+- **GitHub Issues**: [github.com/aquavis12/power-aws-inventory/issues](https://github.com/aquavis12/power-aws-inventory/issues)
+- **Email**: rachapudivishnu3@gmail.com
+
+---
+
 ## License
 
 MIT — see [LICENSE](./LICENSE)
