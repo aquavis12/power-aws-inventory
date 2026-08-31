@@ -339,15 +339,21 @@ power-aws-inventory/
 
 ---
 
+## Privacy Policy
+
+This power runs entirely on your local machine. No data is collected, transmitted, or stored externally. AWS API calls are made directly from your machine using your own credentials. See [Privacy Policy](https://github.com/aquavis12/power-aws-inventory/blob/main/PRIVACY.md) for details.
+
+---
+
 ## Issues & Support
 
 Found a bug or have a feature request?
 
 - **GitHub Issues**: [github.com/aquavis12/power-aws-inventory/issues](https://github.com/aquavis12/power-aws-inventory/issues)
-- **Email**: rachapudivishnu3@gmail.com
+- **Email**: rachapudivishnu9@gmail.com
 
 ---
 
 ## License
 
-MIT — see [LICENSE](./LICENSE)
+MIT — see [LICENSE](LICENSE)
