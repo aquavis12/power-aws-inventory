@@ -7,6 +7,7 @@
       "args": [
         "mcp-proxy-for-aws==1.6.0",
         "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--read-only",
         "--metadata",
         "AWS_REGION=us-east-1"
       ],
@@ -18,7 +19,7 @@
       "type": "stdio",
       "command": "uvx",
       "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
+        "awslabs.aws-documentation-mcp-server==1.2.0"
       ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"

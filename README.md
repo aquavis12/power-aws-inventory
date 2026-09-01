@@ -333,9 +333,15 @@ power-aws-inventory/
 
 ## Security
 
-- **Read-only**: This power never creates, modifies, or deletes any AWS resource.
-- **No secrets in output**: Secret values are never included. Tag values that look like secrets are masked.
-- **Local only**: All data stays on your machine. Nothing is uploaded anywhere.
+- **Read-only at the transport layer**: The `aws-mcp` proxy is configured with `--read-only`, so write-capable AWS tools are hidden and never exposed to the agent. This power never creates, modifies, or deletes any AWS resource.
+- **Pinned dependencies**: All MCP server packages are pinned to exact versions in `mcp.json` (`mcp-proxy-for-aws==1.6.0`, `awslabs.aws-documentation-mcp-server==1.2.0`) so behavior does not change automatically on upstream releases.
+- **Sensitive metadata handling**: The scan reads AWS account metadata that can be sensitive. The power applies these rules:
+  - **IAM policies** — captures policy names, ARNs, and attachment counts only; full policy JSON documents are not exported.
+  - **Lambda / ECS / Batch environment variables** — records variable names (keys) only, never their values.
+  - **Secrets Manager & SSM SecureString** — metadata only (name, ARN, rotation status); secret values are never retrieved.
+  - **Tags** — values whose key contains `password`, `secret`, `key`, `token`, or `credential` are masked.
+- **Resource identifiers**: ARNs, IPs, endpoints, and account IDs are included by design for inventory purposes. Because the generated workbook contains this identifying data, treat the output file as sensitive.
+- **Local only**: All data stays on your machine in `inventory-reports/`. Nothing is uploaded anywhere.
 
 ---
 

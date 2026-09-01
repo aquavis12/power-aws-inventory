@@ -198,3 +198,14 @@ Use this strategy for `full` mode or `category` mode with 3+ groups. Not needed 
 - **No secrets in output** — mask tags whose key contains "password", "secret", "key", "token", "credential".
 - **AccessDenied → ScanNotes** — log and continue, never fail the entire scan.
 - **Never invent API operations** — use only documented operations from `steering/inventory-workflow.md`.
+
+### Sensitive Data Handling
+
+This power reads AWS account metadata that may be sensitive. Handle it as follows:
+
+- **Lambda / ECS / Batch environment variables**: Record only the variable **names** (keys), never their **values**. Do NOT call `lambda:GetFunctionConfiguration` for the purpose of exporting `Environment.Variables` values — capture the key list only, or skip entirely.
+- **IAM policy documents**: Capture policy **names, ARNs, and attachment counts** only. Do NOT embed full inline or managed policy JSON documents in the workbook.
+- **Secrets Manager / SSM SecureString**: Never call `GetSecretValue` or `GetParameter` with decryption. Metadata only (name, ARN, rotation status).
+- **Resource identifiers** (ARNs, IPs, account IDs, endpoints): These are included by design for inventory purposes. Treat the generated workbook as sensitive — it is written locally only and never uploaded anywhere.
+- **Output stays local**: All data remains in `inventory-reports/` on the user's machine. Never transmit inventory data to any external endpoint.
+- The MCP proxy runs with `--read-only`, so write-capable AWS tools are hidden at the transport layer — but these content rules still apply to the read data that is collected.
