@@ -4,6 +4,10 @@ A Kiro Power that scans your AWS account and generates comprehensive infrastruct
 
 Inspired by [aws-auto-inventory](https://github.com/aws-samples/aws-auto-inventory), rebuilt as a Kiro-native agent power with no external tool dependencies.
 
+<p align="center">
+  <img src="assets/power-aws-inventory-demo.gif" alt="AWS Inventory Power scanning an account and generating an Excel workbook" width="820">
+</p>
+
 ---
 
 ## Features
